@@ -1,4 +1,5 @@
-str1 = list(input())
+str1 = str(input())
+str1 = list(str1)
 
 ind1 = 0
 ind2 = 0
@@ -34,9 +35,3 @@ while ind1 != len(str1):
             i = ind2
 
 print(''.join(str1))
-
-
-
-
-
-
