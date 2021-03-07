@@ -26,4 +26,4 @@ def solve ():
  
     return (playersPower[first])
  
-print (solve ())
+return (solve ())
