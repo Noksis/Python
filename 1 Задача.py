@@ -10,7 +10,7 @@ while ind1 != len(str1):
         i += 1
         if i == len(str1):
             print(''.join(str1))
-            exit(0)
+            ret
 
     ind1 = i
     ind2 = i + 1
