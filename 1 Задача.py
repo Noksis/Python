@@ -36,4 +36,4 @@ def solve():
 
     return(''.join(str1))
 
-print(solve())
+return(solve())
