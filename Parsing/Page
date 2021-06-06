@@ -1,7 +1,9 @@
-# scraper.py
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+
+GTA = pd.DataFrame()
+
 
 url = 'https://www.muztorg.ru/product/A023482'
 r = requests.get(url)
@@ -73,3 +75,12 @@ O_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
 O = O_t[O_t.find("Ориентация:") + 12:]
 O = O[:O.find('\n')]
 print(15,O)
+ 
+# Сброс ограничений на число столбцов
+pd.set_option('display.max_columns', None)
+
+# Сброс ограничений на количество символов в записи
+pd.set_option('display.max_colwidth', None)
+
+GTA = GTA.append(pd.DataFrame([[Name,articul,describe,colour,type,mat,brend,strings,price,website,video,image,respons,menz,O]], columns = ['Name','Articul','Describe','Colour','Type_guitar','Material','Brand','Strings','Price', "Website", "Video", "Image", "Respons", "Menzura", "Orient"]), ignore_index=True)
+print(GTA)
