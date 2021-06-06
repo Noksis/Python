@@ -49,7 +49,6 @@ for A in Articl:
         Name = name_g.attrs.get('content')
     except:
         Name = "Гитара"
-    print(Name)
     # 2 Артикул гитары
     try:
         articul = A
@@ -58,7 +57,6 @@ for A in Articl:
     # 3 Описание гитары
     try:
         describe = soup.find('div', class_='product-info__i _description').text;
-        print(3, describe)
     except:
         describe = "Гитара классная ваще"
     # 4 Характеристики: цвет
@@ -66,7 +64,6 @@ for A in Articl:
         colour_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
         colour = colour_t[colour_t.find("Цвет:") + 6:]
         colour = colour[:colour.find('\n')]
-        print(4, colour)
     except:
         colour = "Серо-буро-малиновая"
     # 5 Характеристики: тип корпуса
@@ -74,7 +71,6 @@ for A in Articl:
         type_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
         type = type_t[type_t.find("Тип корпуса:") + 13:]
         type = type[:type.find('\n')]
-        print(5, type)
     except:
         type = "Гитарный"
     # 6 Характеристики: материал корпуса\
@@ -82,7 +78,6 @@ for A in Articl:
         mat_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
         mat = mat_t[mat_t.find("Материал корпуса:") + 18:]
         mat = mat[:mat.find('\n')]
-        print(6, mat)
     except:
         mat = "дерево"
     # 7 Характеристики: Бренды
@@ -93,7 +88,6 @@ for A in Articl:
         else:
             brend = brend_t[brend_t.find("Бренды:") + 8:]
             brend = brend[:brend.find('\n')]
-            print(7, brend)
     except:
         brend = "ВШЭ"
     # 8 Характеристики: количество струн
@@ -101,41 +95,35 @@ for A in Articl:
         strings_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
         strings = strings_t[strings_t.find("Количество струн:") + 17:]
         strings = strings[:strings.find('\n')]
-        print(8, strings)
     except:
         strings = 0
     # 9 Цена
     try:
         price_t = soup.find('div', class_='inner-product-page row')
         price = price_t.attrs.get("data-price")
-        print(9, price)
     except:
         price = 5000
     # 10 Ссылка на страницу
     try:
         website_t = soup.find("meta", property="og:url")
         website = website_t.attrs.get('content')
-        print(10, website)
     except:
         website = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=TimeLimeTimeLime"
     # 11 Ссылка на видео
     try:
         video_t = soup.find("meta", property="og:video")
         video = video_t.attrs.get('content')
-        print(11, video)
     except:
         video = "None"
     # 12 Ссылка на изображение
     try:
         image_t = soup.find("meta", property="og:image")
         image = image_t.attrs.get('content')
-        print(12, image)
     except:
         image = "image"
     # 13 Количество отзывов
     try:
         respons = soup.find("meta", itemprop="reviewCount").attrs.get('content')
-        print(13, respons)
     except:
         respons = 10
     # 14 Характеристика: мензура
@@ -146,7 +134,6 @@ for A in Articl:
         else:
             menz = menz_t[menz_t.find("Мензура") + 20:]
             menz = menz[:menz.find('\n')]
-            print(14, menz)
     except:
         menz = 30
     # 15 Характеристика: ориентация
@@ -157,7 +144,6 @@ for A in Articl:
         else:
             O = O_t[O_t.find("Ориентация:") + 12:]
             O = O[:O.find('\n')]
-            print(15, O)
     except:
         O = "Правосторонняя"
  
