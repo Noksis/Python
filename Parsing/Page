@@ -54,6 +54,8 @@ for A in Articl:
     # 2 Артикул гитары
     try:
         articul = soup.find('div', class_='product-info__i').text;
+        articul = articul[articul.find("A"):]
+        aritcul = articul[:articul.find("\n")]
         print(2, articul)
     except :
         articul = "Артикул"
@@ -140,17 +142,23 @@ for A in Articl:
     # 14 Характеристика: мензура
     try:
         menz_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
-        menz = menz_t[menz_t.find("Мензура") + 20:]
-        menz = menz[:menz.find('\n')]
-        print(14, menz)
+        if (menz_t == -1):
+            menz = 30
+        else:
+            menz = menz_t[menz_t.find("Мензура") + 20:]
+            menz = menz[:menz.find('\n')]
+            print(14, menz)
     except :
         menz = 30
     # 15 Характеристика: ориентация
     try:
         O_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
-        O = O_t[O_t.find("Ориентация:") + 12:]
-        O = O[:O.find('\n')]
-        print(15, O)
+        if (O_t.find("Ориентация:") == -1):
+            O = "Правосторонняя"
+        else:
+            O = O_t[O_t.find("Ориентация:") + 12:]
+            O = O[:O.find('\n')]
+            print(15, O)
     except :
         O = "Правосторонняя"
 
@@ -167,7 +175,7 @@ for A in Articl:
 
     # 17 Популярность гитары (Самостоятельная оценка)
     Popular = "No"
-    if int(respons) > 50:
+    if int(respons) > 10:
         Popular = "Yes"
 
     # 18 Внешний вид (Самостоятельная оценка)
