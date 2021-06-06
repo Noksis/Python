@@ -8,6 +8,7 @@ r = requests.get(url)
 soup = BeautifulSoup(r.text, 'lxml')
 #f = open('info.txt', 'w',  encoding='utf-8')
 #f.write(r.text)
+
 # 1 Название гитары
 name_g = soup.find('meta', property="og:title")
 Name = name_g.attrs.get('content')
@@ -59,3 +60,16 @@ print(11,video)
 image_t = soup.find("meta", property = "og:image")
 image = image_t.attrs.get('content')
 print(12,image)
+# 13 Количество отзывов
+respons = soup.find("meta", itemprop = "reviewCount").attrs.get('content')
+print(13, respons)
+# 14 Характеристика: мензура
+menz_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+menz = menz_t[menz_t.find("Мензура") + 20:]
+menz = menz[:menz.find('\n')]
+print(14,menz)
+# 15 Характеристика: ориентация
+O_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+O = O_t[O_t.find("Ориентация:") + 12:]
+O = O[:O.find('\n')]
+print(15,O)
