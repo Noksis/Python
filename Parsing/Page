@@ -26,8 +26,24 @@ colour = colour_t[colour_t.find("Цвет:") + 5:]
 print(colour)
 # 6 Характеристики: материал корпуса
 mat_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-mat = colour_t[colour_t.find("Материал корпуса:") + 17:]
+mat = mat_t[mat_t.find("Материал корпуса:") + 17:]
 print(mat)
 # 7 Характеристики: Бренды
+brend_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+brend = brend_t[brend_t.find("Бренды:") + 7:]
+print(brend)
 # 8 Характеристики: количество струн
-print(Name)
+strings_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+strings = strings_t[brend_t.find("Количество струн:") + 17:]
+print(strings)
+# 9 Цена
+price_t = soup.find('div', class_ = 'inner-product-page row')
+price = price_t.attrs.get("data-price")
+print(price)
+# 10 Ссылка на страницу
+website = soup.fine("meta", property = "og:url").attrs.get('content')
+# 11 Ссылка на видео
+video = soup.fine("meta", property = "og:video").attrs.get('content')
+# 12 Ссылка на изображение
+image = soup.fine("meta", property = "og:image").attrs.get('content')
+
