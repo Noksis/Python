@@ -53,10 +53,7 @@ for A in Articl:
     print(Name)
     # 2 Артикул гитары
     try:
-        articul = soup.find('div', class_='product-info__i').text;
-        articul = articul[articul.find("A"):]
-        aritcul = articul[:articul.find("\n")]
-        print(2, articul)
+        articul = A
     except :
         articul = "Артикул"
     # 3 Описание гитары
@@ -92,9 +89,12 @@ for A in Articl:
     # 7 Характеристики: Бренды
     try:
         brend_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
-        brend = brend_t[brend_t.find("Бренды:") + 8:]
-        brend = brend[:brend.find('\n')]
-        print(7, brend)
+        if brend_t.find("Бренды:") == -1:
+            brend = "ВШЭ"
+        else:
+            brend = brend_t[brend_t.find("Бренды:") + 8:]
+            brend = brend[:brend.find('\n')]
+            print(7, brend)
     except :
         brend = "ВШЕ"
     # 8 Характеристики: количество струн
@@ -142,7 +142,7 @@ for A in Articl:
     # 14 Характеристика: мензура
     try:
         menz_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
-        if (menz_t == -1):
+        if (menz_t.find("Мензура") == -1):
             menz = 30
         else:
             menz = menz_t[menz_t.find("Мензура") + 20:]
@@ -175,7 +175,7 @@ for A in Articl:
 
     # 17 Популярность гитары (Самостоятельная оценка)
     Popular = "No"
-    if int(respons) > 10:
+    if int(respons) > 5:
         Popular = "Yes"
 
     # 18 Внешний вид (Самостоятельная оценка)
