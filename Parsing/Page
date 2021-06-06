@@ -10,40 +10,52 @@ soup = BeautifulSoup(r.text, 'lxml')
 #f.write(r.text)
 # 1 Название гитары
 name_g = soup.find('meta', property="og:title")
-print(name_g.attrs.get('content'))
 Name = name_g.attrs.get('content')
+print(1,Name)
 # 2 Артикул гитары
 articul = soup.find('div', class_ = 'product-info__i').text;
+print(2,articul)
 # 3 Описание гитары
 describe = soup.find('div', class_= 'product-info__i _description').text;
+print(3,describe)
 # 4 Характеристики: цвет
 colour_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-colour = colour_t[colour_t.find("Цвет:") + 5:]
-print(colour)
-# 5 Характеристики: тип
-colour_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-colour = colour_t[colour_t.find("Цвет:") + 5:]
-print(colour)
+colour = colour_t[colour_t.find("Цвет:") + 6:]
+colour = colour[:colour.find('\n')]
+print(4,colour)
+# 5 Характеристики: тип корпуса
+type_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+type = type_t[type_t.find("Тип корпуса:") + 13:]
+type = type[:type.find('\n')]
+print(5,type)
 # 6 Характеристики: материал корпуса
 mat_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-mat = mat_t[mat_t.find("Материал корпуса:") + 17:]
-print(mat)
+mat = mat_t[mat_t.find("Материал корпуса:") + 18:]
+mat = mat[:mat.find('\n')]
+print(6,mat)
 # 7 Характеристики: Бренды
 brend_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-brend = brend_t[brend_t.find("Бренды:") + 7:]
-print(brend)
+brend = brend_t[brend_t.find("Бренды:") + 8:]
+brend = brend[:brend.find('\n')]
+print(7,brend)
 # 8 Характеристики: количество струн
 strings_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-strings = strings_t[brend_t.find("Количество струн:") + 17:]
-print(strings)
+strings = strings_t[strings_t.find("Количество струн:") + 17:]
+strings = strings[:strings.find('\n')]
+print(8,strings)
 # 9 Цена
 price_t = soup.find('div', class_ = 'inner-product-page row')
 price = price_t.attrs.get("data-price")
-print(price)
+print(9,price)
 # 10 Ссылка на страницу
-website = soup.fine("meta", property = "og:url").attrs.get('content')
+website_t = soup.find("meta", property = "og:url")
+website = website_t.attrs.get('content')
+print(10,website)
 # 11 Ссылка на видео
-video = soup.fine("meta", property = "og:video").attrs.get('content')
+video_t = soup.find("meta", property = "og:video")
+video = video_t.attrs.get('content')
+print(11,video)
 # 12 Ссылка на изображение
-image = soup.fine("meta", property = "og:image").attrs.get('content')
-
+image_t = soup.find("meta", property = "og:image")
+image = image_t.attrs.get('content')
+print(12,image)
