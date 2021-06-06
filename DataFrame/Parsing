@@ -1,0 +1,240 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+ # Константы
+Budgetary = 10000
+Medium = 20000
+Expensive = 30000
+Luxury = 0
+ 
+# GTA = pd.read_csv("Data.csv")
+
+ 
+# Блок 1: получение артикулов 600 гитар, чтобы по артикулам перебирать страницы с гитарами
+Articl = []
+# На одной странице 24 гитары, следовательно 25*24 гитар нам хватит для всей таблицы
+Number_pages = 20
+# В цикле собираем информацию о артикулах гитар
+for page in range(Number_pages):
+    # Открываем стартовую страницу с гитарами
+    url = 'https://www.muztorg.ru/category/akusticheskie-gitary?in-stock=1&page=%d' % (page)
+    r = requests.get(url)
+ 
+    # Создаем удобную структуру для парсинга
+    soup = BeautifulSoup(r.text, 'lxml')
+ 
+    # Получаем таблицу из артикулов гитар
+    Art = soup.find_all('div', class_='id')
+ 
+    # Добавляем все артикулы в список обрезаю не нужную информацию, оставляя только значения
+    for i in Art:
+        Articl.append(i.text.strip('\n')[10:])
+
+# Блок 2: Создание на основе 600 гитар 600 строк в DataFrame с нужыми характеристиками
+GTA = pd.DataFrame()
+
+ # Для каждого артикла
+for A in Articl:
+    time.sleep(0.5)
+    url = 'https://www.muztorg.ru/product/A%s' % (A)
+    print(url)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'lxml')
+ 
+    # 1 Название гитары
+    try:
+        name_g = soup.find('meta', property="og:title")
+        Name = name_g.attrs.get('content')
+    except:
+        Name = "Гитара"
+    print(Name)
+    # 2 Артикул гитары
+    try:
+        articul = A
+    except:
+        articul = "Артикул"
+    # 3 Описание гитары
+    try:
+        describe = soup.find('div', class_='product-info__i _description').text;
+        print(3, describe)
+    except:
+        describe = "Гитара классная ваще"
+    # 4 Характеристики: цвет
+    try:
+        colour_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        colour = colour_t[colour_t.find("Цвет:") + 6:]
+        colour = colour[:colour.find('\n')]
+        print(4, colour)
+    except:
+        colour = "Серо-буро-малиновая"
+    # 5 Характеристики: тип корпуса
+    try:
+        type_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        type = type_t[type_t.find("Тип корпуса:") + 13:]
+        type = type[:type.find('\n')]
+        print(5, type)
+    except:
+        type = "Гитарный"
+    # 6 Характеристики: материал корпуса\
+    try:
+        mat_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        mat = mat_t[mat_t.find("Материал корпуса:") + 18:]
+        mat = mat[:mat.find('\n')]
+        print(6, mat)
+    except:
+        mat = "дерево"
+    # 7 Характеристики: Бренды
+    try:
+        brend_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        if brend_t.find("Бренды:") == -1:
+            brend = "ВШЭ"
+        else:
+            brend = brend_t[brend_t.find("Бренды:") + 8:]
+            brend = brend[:brend.find('\n')]
+            print(7, brend)
+    except:
+        brend = "ВШЭ"
+    # 8 Характеристики: количество струн
+    try:
+        strings_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        strings = strings_t[strings_t.find("Количество струн:") + 17:]
+        strings = strings[:strings.find('\n')]
+        print(8, strings)
+    except:
+        strings = 0
+    # 9 Цена
+    try:
+        price_t = soup.find('div', class_='inner-product-page row')
+        price = price_t.attrs.get("data-price")
+        print(9, price)
+    except:
+        price = 5000
+    # 10 Ссылка на страницу
+    try:
+        website_t = soup.find("meta", property="og:url")
+        website = website_t.attrs.get('content')
+        print(10, website)
+    except:
+        website = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=TimeLimeTimeLime"
+    # 11 Ссылка на видео
+    try:
+        video_t = soup.find("meta", property="og:video")
+        video = video_t.attrs.get('content')
+        print(11, video)
+    except:
+        video = "None"
+    # 12 Ссылка на изображение
+    try:
+        image_t = soup.find("meta", property="og:image")
+        image = image_t.attrs.get('content')
+        print(12, image)
+    except:
+        image = "image"
+    # 13 Количество отзывов
+    try:
+        respons = soup.find("meta", itemprop="reviewCount").attrs.get('content')
+        print(13, respons)
+    except:
+        respons = 10
+    # 14 Характеристика: мензура
+    try:
+        menz_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        if (menz_t.find("Мензура") == -1):
+            menz = 30
+        else:
+            menz = menz_t[menz_t.find("Мензура") + 20:]
+            menz = menz[:menz.find('\n')]
+            print(14, menz)
+    except:
+        menz = 30
+    # 15 Характеристика: ориентация
+    try:
+        O_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        if (O_t.find("Ориентация:") == -1):
+            O = "Правосторонняя"
+        else:
+            O = O_t[O_t.find("Ориентация:") + 12:]
+            O = O[:O.find('\n')]
+            print(15, O)
+    except:
+        O = "Правосторонняя"
+ 
+    # 16 Ценовой диапозон (Самостоятельная оценка)
+    status = "None"
+    if int(price) < Budgetary:
+        status = "Budgetary"
+    elif int(price) < Medium:
+        status = "Medium"
+    elif int(price) < Expensive:
+        status = "Expensive"
+    else:
+        status = "Luxury"
+ 
+    # 17 Популярность гитары (Самостоятельная оценка)
+    Popular = "No"
+    if int(respons) > 5:
+        Popular = "Yes"
+ 
+    # 18 Внешний вид (Самостоятельная оценка)
+    view = "No"
+    if (video != "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=TimeLimeTimeLime") and (image != "image"):
+        view = "Yes"
+ 
+# Создание DataFrame
+GTA = GTA.append(pd.DataFrame([[Name, articul, describe, colour, type, mat, brend, strings, price, website, video,
+                                    image, respons, menz, O, status, Popular, view]],
+                                  columns=['Name', 'Articul', 'Describe', 'Colour', 'Type_guitar', 'Material', 'Brand',
+                                           'Strings', 'Price', "Website", "Video", "Image", "Respons", "Menzura",
+                                           "Orient", "Status", "Popular", "View"]), ignore_index=True)
+print(GTA)
+#Сохраняем файл, чтобы в следующий раз не выгружать данные
+GTA.to_csv('Data1.csv')
+
+# Создание графиков: распределние по популярности и зависимости цены от марки гитары
+GTA_Gr = GTA.groupby(["Brand"]).mean()
+f, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7, 5), sharex=True)
+sns.set_theme(style="white", context="talk")
+
+print(GTA_Gr.index)
+fig = plt.figure()
+ax = fig.add_axes([5,5,10,10])
+Prices = GTA_Gr["Price"].tolist()
+ 
+ 
+ 
+labels = GTA_Gr.index
+Prices = Prices
+ 
+x = np.arange(len(GTA_Gr.index))  
+width = 0.1 
+fig, ax = plt.subplots()
+rects1 = ax.bar(x - width/2, Prices, width, label='Muztorg')
+ 
+ax.set_ylabel('Prices')
+ax.set_title('Prices by group and brand')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+ 
+ax.bar_label(rects1, padding=3)
+ 
+fig.set_figwidth(20)   
+fig.set_figheight(10)
+fig.tight_layout()
+ 
+ 
+labels = 'Popular', 'Not Popular'
+sizes = [sum(GTA["Popular"] == "Yes"), sum(GTA["Popular"] == "No")]
+explode = (0, 0.1) 
+ 
+fig1, ax1 = plt.subplots()
+ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        shadow=True, startangle=90)
+ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.show()
+
+# Проверка гипотезы: зависимость популярности гитары в отзывах от ее ценнового диапозона
+GTA_group_resp = GTA.groupby(['Status']).mean()
+print("Самая популярный ценовой диапозон гитар:", GTA_group_resp.index[GTA_group_resp.Respons.argmax()])
