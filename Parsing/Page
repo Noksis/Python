@@ -1,86 +1,186 @@
+# scraper.py
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-
-GTA = pd.DataFrame()
-
 
 url = 'https://www.muztorg.ru/product/A023482'
 r = requests.get(url)
 soup = BeautifulSoup(r.text, 'lxml')
 #f = open('info.txt', 'w',  encoding='utf-8')
 #f.write(r.text)
+Name = soup.find('meta',property="og:title")
+print(Name.text)
 
-# 1 Название гитары
-name_g = soup.find('meta', property="og:title")
-Name = name_g.attrs.get('content')
-print(1,Name)
-# 2 Артикул гитары
-articul = soup.find('div', class_ = 'product-info__i').text;
-print(2,articul)
-# 3 Описание гитары
-describe = soup.find('div', class_= 'product-info__i _description').text;
-print(3,describe)
-# 4 Характеристики: цвет
-colour_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-colour = colour_t[colour_t.find("Цвет:") + 6:]
-colour = colour[:colour.find('\n')]
-print(4,colour)
-# 5 Характеристики: тип корпуса
-type_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-type = type_t[type_t.find("Тип корпуса:") + 13:]
-type = type[:type.find('\n')]
-print(5,type)
-# 6 Характеристики: материал корпуса
-mat_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-mat = mat_t[mat_t.find("Материал корпуса:") + 18:]
-mat = mat[:mat.find('\n')]
-print(6,mat)
-# 7 Характеристики: Бренды
-brend_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-brend = brend_t[brend_t.find("Бренды:") + 8:]
-brend = brend[:brend.find('\n')]
-print(7,brend)
-# 8 Характеристики: количество струн
-strings_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-strings = strings_t[strings_t.find("Количество струн:") + 17:]
-strings = strings[:strings.find('\n')]
-print(8,strings)
-# 9 Цена
-price_t = soup.find('div', class_ = 'inner-product-page row')
-price = price_t.attrs.get("data-price")
-print(9,price)
-# 10 Ссылка на страницу
-website_t = soup.find("meta", property = "og:url")
-website = website_t.attrs.get('content')
-print(10,website)
-# 11 Ссылка на видео
-video_t = soup.find("meta", property = "og:video")
-video = video_t.attrs.get('content')
-print(11,video)
-# 12 Ссылка на изображение
-image_t = soup.find("meta", property = "og:image")
-image = image_t.attrs.get('content')
-print(12,image)
-# 13 Количество отзывов
-respons = soup.find("meta", itemprop = "reviewCount").attrs.get('content')
-print(13, respons)
-# 14 Характеристика: мензура
-menz_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-menz = menz_t[menz_t.find("Мензура") + 20:]
-menz = menz[:menz.find('\n')]
-print(14,menz)
-# 15 Характеристика: ориентация
-O_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
-O = O_t[O_t.find("Ориентация:") + 12:]
-O = O[:O.find('\n')]
-print(15,O)
+# Блок 1: получение артикулов 600 гитар, чтобы по артикулам перебирать страницы с гитарами
+Articl = []
+# На одной странице 24 гитары, следовательно 25*24 гитар нам хватит для всей таблицы
+Number_pages = 1
+# В цикле собираем информацию о артикулах гитар
+for page in range(Number_pages):
+    # Открываем стартовую страницу с гитарами
+    url = 'https://www.muztorg.ru/category/akusticheskie-gitary?in-stock=1&page=%d' % (page)
+    r = requests.get(url)
+
+    # Создаем удобную структуру для парсинга
+    soup = BeautifulSoup(r.text, 'lxml')
+
+    # Получаем таблицу из артикулов гитар
+    Art = soup.find_all('div', class_ = 'id')
+
+    # Добавляем все артикулы в список обрезаю не нужную информацию, оставляя только значения
+    for i in Art:
+        Articl.append(i.text.strip('\n')[10:])
+print(Articl)
+# Блок 2: Создание на основе 600 гитар 600 строк в DataFrame с нужыми характеристиками
+GTA = pd.DataFrame()
+Budgetary = 10000
+Medium = 20000
+Expensive = 30000
+Luxury = 0
+
+for A in Articl:
+    url = 'https://www.muztorg.ru/product/A%s' % (A)
+    print(url)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'lxml')
  
-# Сброс ограничений на число столбцов
-pd.set_option('display.max_columns', None)
+    # 1 Название гитары
+    try:
+        name_g = soup.find('meta', property="og:title")
+        Name = name_g.attrs.get('content')
+    except:
+        Name = "Гитара"
+    print(Name)
+    # 2 Артикул гитары
+    try:
+        articul = soup.find('div', class_='product-info__i').text;
+        print(2, articul)
+    except :
+        articul = "Артикул"
+    # 3 Описание гитары
+    try:
+        describe = soup.find('div', class_='product-info__i _description').text;
+        print(3, describe)
+    except :
+        describe = "Гитара классная ваще"
+    # 4 Характеристики: цвет
+    try:
+        colour_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        colour = colour_t[colour_t.find("Цвет:") + 6:]
+        colour = colour[:colour.find('\n')]
+        print(4, colour)
+    except :
+        colour = "Серо-буро-малиновая"
+    # 5 Характеристики: тип корпуса
+    try:
+        type_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        type = type_t[type_t.find("Тип корпуса:") + 13:]
+        type = type[:type.find('\n')]
+        print(5, type)
+    except :
+        type = "Гитарный"
+    # 6 Характеристики: материал корпуса\
+    try:
+        mat_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        mat = mat_t[mat_t.find("Материал корпуса:") + 18:]
+        mat = mat[:mat.find('\n')]
+        print(6, mat)
+    except :
+        mat = "дерево"
+    # 7 Характеристики: Бренды
+    try:
+        brend_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        brend = brend_t[brend_t.find("Бренды:") + 8:]
+        brend = brend[:brend.find('\n')]
+        print(7, brend)
+    except :
+        brend = "ВШЕ"
+    # 8 Характеристики: количество струн
+    try:
+        strings_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        strings = strings_t[strings_t.find("Количество струн:") + 17:]
+        strings = strings[:strings.find('\n')]
+        print(8, strings)
+    except :
+        strings = 0
+    # 9 Цена
+    try:
+        price_t = soup.find('div', class_='inner-product-page row')
+        price = price_t.attrs.get("data-price")
+        print(9, price)
+    except :
+        price = 5000
+    # 10 Ссылка на страницу
+    try:
+        website_t = soup.find("meta", property="og:url")
+        website = website_t.attrs.get('content')
+        print(10, website)
+    except :
+        website = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=TimeLimeTimeLime"
+    # 11 Ссылка на видео
+    try:
+        video_t = soup.find("meta", property="og:video")
+        video = video_t.attrs.get('content')
+        print(11, video)
+    except :
+        video = "None"
+    # 12 Ссылка на изображение
+    try:
+        image_t = soup.find("meta", property="og:image")
+        image = image_t.attrs.get('content')
+        print(12, image)
+    except :
+        image = "image"
+    # 13 Количество отзывов
+    try:
+        respons = soup.find("meta", itemprop="reviewCount").attrs.get('content')
+        print(13, respons)
+    except :
+        respons = 10
+    # 14 Характеристика: мензура
+    try:
+        menz_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        menz = menz_t[menz_t.find("Мензура") + 20:]
+        menz = menz[:menz.find('\n')]
+        print(14, menz)
+    except :
+        menz = 30
+    # 15 Характеристика: ориентация
+    try:
+        O_t = soup.find('div', class_='panel-body', id='mobile-characteristics').text
+        O = O_t[O_t.find("Ориентация:") + 12:]
+        O = O[:O.find('\n')]
+        print(15, O)
+    except :
+        O = "Правосторонняя"
 
-# Сброс ограничений на количество символов в записи
-pd.set_option('display.max_colwidth', None)
+    # 16 Ценовой диапозон (Самостоятельная оценка)
+    status = "None"
+    if int(price) < Budgetary:
+        status = "Budgetary"
+    elif int(price) < Medium:
+        status = "Medium"
+    elif int(price) < Expensive:
+        status = "Expensive"
+    else:
+        status = "Luxury"
 
-GTA = GTA.append(pd.DataFrame([[Name,articul,describe,colour,type,mat,brend,strings,price,website,video,image,respons,menz,O]], columns = ['Name','Articul','Describe','Colour','Type_guitar','Material','Brand','Strings','Price', "Website", "Video", "Image", "Respons", "Menzura", "Orient"]), ignore_index=True)
+    # 17 Популярность гитары (Самостоятельная оценка)
+    Popular = "No"
+    if int(respons) > 50:
+        Popular = "Yes"
+
+    # 18 Внешний вид (Самостоятельная оценка)
+    view = "No"
+    if (video != "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=TimeLimeTimeLime") and (image != "image"):
+        view = "Yes"
+
+
+    # Сброс ограничений на число столбцов
+    pd.set_option('display.max_columns', None)
+
+    # Сброс ограничений на количество символов в записи
+    pd.set_option('display.max_colwidth', None)
+ 
+    GTA = GTA.append(pd.DataFrame([[Name,articul,describe,colour,type,mat,brend,strings,price,website,video,image,respons,menz,O,status, Popular,view]], columns = ['Name','Articul','Describe','Colour','Type_guitar','Material','Brand','Strings','Price', "Website", "Video", "Image", "Respons", "Menzura", "Orient","Status", "Popular", "View"]), ignore_index=True)
 print(GTA)
