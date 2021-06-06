@@ -1,0 +1,33 @@
+# scraper.py
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+url = 'https://www.muztorg.ru/product/A023482'
+r = requests.get(url)
+soup = BeautifulSoup(r.text, 'lxml')
+#f = open('info.txt', 'w',  encoding='utf-8')
+#f.write(r.text)
+# 1 Название гитары
+name_g = soup.find('meta', property="og:title")
+print(name_g.attrs.get('content'))
+Name = name_g.attrs.get('content')
+# 2 Артикул гитары
+articul = soup.find('div', class_ = 'product-info__i').text;
+# 3 Описание гитары
+describe = soup.find('div', class_= 'product-info__i _description').text;
+# 4 Характеристики: цвет
+colour_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+colour = colour_t[colour_t.find("Цвет:") + 5:]
+print(colour)
+# 5 Характеристики: тип
+colour_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+colour = colour_t[colour_t.find("Цвет:") + 5:]
+print(colour)
+# 6 Характеристики: материал корпуса
+mat_t = soup.find('div', class_ = 'panel-body', id='mobile-characteristics').text
+mat = colour_t[colour_t.find("Материал корпуса:") + 17:]
+print(mat)
+# 7 Характеристики: Бренды
+# 8 Характеристики: количество струн
+print(Name)
